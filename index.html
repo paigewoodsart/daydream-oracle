@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daydream Oracle by Paige Woods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #F7F5F0;
+      --warm-white: #FDFCF9;
+      --text: #2C2926;
+      --text-mid: #6B6560;
+      --text-light: #A09890;
+      --border: rgba(44, 41, 38, 0.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Libre Baskerville', 'Baskerville', 'Georgia', serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.8;
+      font-weight: 400;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ---- PRISMATIC AMBIENT LIGHT ---- */
+    .prismatic {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      clip: rect(0, 100vw, 100vh, 0);
+      -webkit-clip-path: inset(0);
+      clip-path: inset(0);
+    }
+    .prismatic::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background:
+        radial-gradient(ellipse at 25% 20%, rgba(255, 182, 193, 0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 30%, rgba(173, 216, 230, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 70%, rgba(255, 218, 185, 0.05) 0%, transparent 45%),
+        radial-gradient(ellipse at 20% 80%, rgba(216, 191, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 75%, rgba(180, 238, 210, 0.05) 0%, transparent 45%),
+        radial-gradient(ellipse at 60% 10%, rgba(255, 255, 180, 0.04) 0%, transparent 40%);
+      animation: prismaticDrift 25s ease-in-out infinite alternate;
+    }
+    .prismatic::after {
+      content: '';
+      position: absolute;
+      width: 180%;
+      height: 180%;
+      top: -40%;
+      left: -40%;
+      background:
+        radial-gradient(ellipse at 60% 40%, rgba(255, 160, 180, 0.05) 0%, transparent 45%),
+        radial-gradient(ellipse at 30% 60%, rgba(140, 200, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(200, 180, 255, 0.04) 0%, transparent 40%);
+      animation: prismaticDrift2 30s ease-in-out infinite alternate;
+    }
+    @keyframes prismaticDrift {
+      0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      33% { transform: translate(3%, -2%) rotate(1deg) scale(1.02); }
+      66% { transform: translate(-2%, 3%) rotate(-0.5deg) scale(0.98); }
+      100% { transform: translate(1%, -1%) rotate(0.5deg) scale(1.01); }
+    }
+    @keyframes prismaticDrift2 {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-3%, 2%) rotate(-1deg); }
+      100% { transform: translate(2%, -3%) rotate(1deg); }
+    }
+
+    /* ---- BREATHING KEYFRAMES ---- */
+    @keyframes breathe {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.92; transform: scale(1.005); }
+    }
+    @keyframes breatheSlow {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      margin: 0;
+      box-sizing: border-box;
+      z-index: 9999;
+      padding: 2px;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      align-items: center;
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      animation: navFadeIn 0.8s ease 0.6s forwards;
+    }
+    @keyframes navFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      font-size: clamp(0.64rem, 1.5vw, 0.82rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      font-weight: 400;
+      transition: color 0.3s ease, opacity 0.3s ease;
+      opacity: 0.7;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+    nav a:hover { opacity: 1; }
+    nav .nav-links {
+      display: flex;
+      gap: clamp(2rem, 5vw, 3.5rem);
+      align-items: center;
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 2rem;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 1.2s ease forwards;
+    }
+
+    /* ---- CARD FAN ---- */
+    .card-fan {
+      position: relative;
+      width: 475px;
+      height: 360px;
+      margin: 0 auto 3.5rem;
+      cursor: pointer;
+    }
+    .fan-card {
+      position: absolute;
+      width: 185px;
+      left: 50%;
+      bottom: 20px;
+      transform-origin: bottom center;
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow: hidden;
+    }
+    .fan-card img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+    }
+    .fan-card:hover {
+      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+    .card-fan:hover .fan-card:nth-child(1) { transform: translateX(-50%) rotate(-28deg) translateY(-8px); }
+    .card-fan:hover .fan-card:nth-child(2) { transform: translateX(-50%) rotate(-14deg) translateY(-12px); }
+    .card-fan:hover .fan-card:nth-child(3) { transform: translateX(-50%) rotate(0deg) translateY(-16px); }
+    .card-fan:hover .fan-card:nth-child(4) { transform: translateX(-50%) rotate(14deg) translateY(-12px); }
+    .card-fan:hover .fan-card:nth-child(5) { transform: translateX(-50%) rotate(28deg) translateY(-8px); }
+
+    .hero h1 {
+      font-size: 0.72rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.6em;
+      color: var(--text-light);
+      margin-bottom: 0.75rem;
+    }
+    .hero .title-main {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+    .hero .byline {
+      font-size: 0.68rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0;
+      animation: breatheSlow 6s ease-in-out infinite;
+    }
+
+    /* ---- SECTIONS ---- */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 3.5rem 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .section-heading {
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.5em;
+      color: var(--text-light);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      text-align: center;
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-mid);
+      font-size: 0.9rem;
+      max-width: 480px;
+      margin: 0 auto 30px;
+      line-height: 1.9;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---- PICK A CARD ---- */
+    #pick-card {
+      position: relative;
+      z-index: 1;
+      background: transparent;
+      text-align: center;
+      padding-top: 5rem;
+      scroll-margin-top: 0;
+    }
+    .pick-instruction {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.02em;
+      animation: breatheSlow 5s ease-in-out infinite;
+    }
+    .pick-fan-area {
+      position: relative;
+      margin: 0 auto 2rem;
+    }
+    .btn-pick {
+      display: inline-block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      font-weight: 400;
+      padding: 1rem 3rem;
+      border: 1px solid rgba(44, 41, 38, 0.2);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .btn-pick:hover {
+      background: var(--text);
+      color: var(--cream);
+    }
+
+    /* Revealed card */
+    .revealed-card {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 560px;
+      margin: 0 auto;
+      animation: fadeUp 0.8s ease forwards;
+    }
+    .revealed-card.show { display: flex; }
+    .revealed-card img {
+      width: 220px;
+      border-radius: 10px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      animation: gentleFloat 6s ease-in-out infinite;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+    .revealed-card img:hover {
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .revealed-card .card-number {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+    .revealed-card .card-name {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    .revealed-card .card-meaning {
+      color: var(--text-mid);
+      font-size: 0.92rem;
+      line-height: 2;
+      letter-spacing: 0.01em;
+    }
+    .btn-again {
+      display: inline-block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 400;
+      padding: 0.8rem 2rem;
+      border: 1px solid rgba(44, 41, 38, 0.15);
+      background: transparent;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      margin-top: 1rem;
+    }
+    .btn-again:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
+
+    /* ---- THE DECK (Gallery) ---- */
+    #deck {
+      background: transparent;
+    }
+    .deck-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+      gap: 2rem;
+    }
+    .deck-card {
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.5s ease;
+    }
+    .deck-card:hover {
+      transform: translateY(-6px);
+    }
+    .deck-card img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      transition: box-shadow 0.4s ease;
+      display: block;
+    }
+    .deck-card:hover img {
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .deck-card .deck-card-name {
+      margin-top: 0.75rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      transition: color 0.3s ease;
+    }
+    .deck-card:hover .deck-card-name {
+      color: var(--text);
+    }
+
+    /* ---- CARD DETAIL MODAL ---- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 41, 38, 0.4);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--cream);
+      border-radius: 2px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3.5rem 3rem;
+      gap: 1.25rem;
+      position: relative;
+      animation: fadeUp 0.5s ease;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--text-light);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s ease;
+      font-family: 'Libre Baskerville', serif;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal img {
+      width: 198px;
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    }
+    .modal .modal-number {
+      font-size: 0.58rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+    .modal h3 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      text-align: center;
+    }
+    .modal .modal-meaning {
+      color: var(--text-mid);
+      font-size: 0.92rem;
+      line-height: 2;
+      text-align: center;
+      max-width: 500px;
+      letter-spacing: 0.01em;
+    }
+
+    /* ---- DIVIDER ---- */
+    .section-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--text-light);
+      margin: 0 auto 4rem;
+      opacity: 0.4;
+    }
+
+    /* ---- SPREAD SECTION ---- */
+    #spread {
+      background: transparent;
+      text-align: center;
+      padding-bottom: 8rem;
+    }
+    .spread-layout {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .spread-position {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 198px;
+    }
+    .spread-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+    .spread-slot {
+      width: 176px;
+      height: 264px;
+      border: none;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+    }
+    .spread-slot:hover {
+      transform: translateY(-4px);
+    }
+    .spread-slot .slot-prompt {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.3s ease;
+    }
+    .spread-slot .slot-cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.10);
+      opacity: 1;
+      transition: opacity 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+    }
+    .spread-slot:hover .slot-cover {
+      opacity: 1;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+    }
+    .spread-slot.revealed {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .spread-slot.revealed .revealed-img:hover {
+      box-shadow: 0 15px 40px rgba(0,0,0,0.14);
+    }
+    .spread-slot.revealed .slot-prompt { display: none; }
+    .spread-slot .revealed-img {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      animation: fadeIn 0.8s ease forwards;
+    }
+    .spread-slot.revealed .revealed-img { display: block; }
+    .spread-card-name {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--text);
+      min-height: 1.2em;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.3s;
+    }
+    .spread-card-name.show { opacity: 1; }
+    .spread-card-meaning {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      max-width: 240px;
+      text-align: center;
+      min-height: 1em;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.5s;
+    }
+    .spread-card-meaning.show { opacity: 1; }
+    .spread-reset {
+      display: none;
+      margin-top: 3rem;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 400;
+      padding: 0.8rem 2rem;
+      border: 1px solid rgba(44, 41, 38, 0.15);
+      background: transparent;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .spread-reset.show { display: inline-block; }
+    .spread-reset:hover { border-color: var(--text); color: var(--text); }
+
+    /* ---- SPREAD READING ---- */
+    .spread-reading {
+      display: none;
+      max-width: 640px;
+      margin: 4rem auto 0;
+      text-align: center;
+      animation: fadeUp 1s ease forwards;
+    }
+    .spread-reading.show { display: block; }
+    .spread-reading-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+    .spread-reading-text {
+      color: var(--text-mid);
+      font-size: 0.95rem;
+      line-height: 2.1;
+      letter-spacing: 0.01em;
+    }
+    .spread-reading-text p {
+      margin-bottom: 1.2rem;
+    }
+    .spread-reading-text p:last-child {
+      margin-bottom: 0;
+    }
+    .spread-reading-text .reading-closing {
+      color: var(--text);
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+    .reading-divider {
+      width: 30px;
+      height: 1px;
+      background: var(--text-light);
+      margin: 2rem auto;
+      opacity: 0.3;
+    }
+    .reading-synthesis {
+      margin-top: 0;
+      color: var(--text);
+      font-size: 0.95rem;
+      line-height: 2.1;
+      letter-spacing: 0.01em;
+    }
+    .reading-numerology,
+    .reading-crystal {
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .reading-numerology {
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: 1rem;
+    }
+    .reading-sub-label {
+      color: var(--text-light);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .reading-sub-text {
+      color: var(--text-mid);
+      font-size: 0.9rem;
+      line-height: 2;
+      letter-spacing: 0.01em;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .reading-crystal-name {
+      color: var(--text);
+      font-family: 'Libre Baskerville', Georgia, serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 3rem 2rem 4rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    /* ---- SCROLLBAR ---- */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(44, 41, 38, 0.15); border-radius: 2px; }
+
+    /* ---- FADE IN ON SCROLL ---- */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---- RESPONSIVE: tablet - spread cards stay in a row ---- */
+    @media (max-width: 1024px) {
+      .spread-layout { gap: 0.75rem; flex-wrap: nowrap; justify-content: center; }
+      .spread-position { width: auto; flex: 0 0 auto; }
+      .spread-slot { width: 100px; height: 150px; }
+      .spread-label { font-size: 0.6rem; }
+    }
+
+    /* ---- RESPONSIVE: mobile ---- */
+    @media (max-width: 768px) {
+      nav {
+        padding: 0.75rem 1.5rem;
+      }
+      nav .nav-links {
+        gap: 1.75rem;
+      }
+      .hero {
+        justify-content: center;
+        padding: 3rem 2rem;
+      }
+      .hero .title-main { font-size: 2.4rem; }
+      .card-fan { width: 317px; height: 330px; }
+      .fan-card { width: 126px; }
+      .deck-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    }
+
+    /* ---- RESPONSIVE: small mobile ---- */
+    @media (max-width: 480px) {
+      .hero .title-main { font-size: 2rem; }
+    }
+
+    /* ---- CONTACT BUTTON (footer) ---- */
+    .btn-contact {
+      display: inline-block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 400;
+      padding: 0.7rem 1.8rem;
+      border: 1px solid rgba(44, 41, 38, 0.2);
+      background: transparent;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      margin-top: 1.25rem;
+    }
+    .btn-contact:hover { border-color: var(--text); color: var(--text); }
+
+    /* ---- CONTACT MODAL ---- */
+    .contact-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 41, 38, 0.55);
+      backdrop-filter: blur(8px);
+      z-index: 300;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .contact-overlay.open { display: flex; }
+    .contact-modal {
+      background: var(--cream);
+      border-radius: 2px;
+      max-width: 540px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 3.5rem 3rem;
+      position: relative;
+      animation: fadeUp 0.45s ease;
+    }
+    .contact-modal h2 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      text-align: center;
+    }
+    .contact-modal .contact-subtitle {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .contact-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .contact-field label {
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+    .contact-field input,
+    .contact-field textarea {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      font-size: 0.88rem;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(44, 41, 38, 0.18);
+      padding: 0.6rem 0;
+      outline: none;
+      transition: border-color 0.3s ease;
+      width: 100%;
+      resize: none;
+    }
+    .contact-field textarea { min-height: 110px; }
+    .contact-field input:focus,
+    .contact-field textarea:focus { border-bottom-color: var(--text); }
+    .contact-field.has-error input,
+    .contact-field.has-error textarea { border-bottom-color: #b5554a; }
+    .contact-field .field-error {
+      display: none;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #b5554a;
+    }
+    .contact-field.has-error .field-error { display: block; }
+    .contact-recaptcha { margin: 1.25rem 0; }
+    .contact-submit {
+      display: inline-block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      font-weight: 400;
+      padding: 1rem 3rem;
+      border: 1px solid rgba(44, 41, 38, 0.2);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    .contact-submit:hover:not(:disabled) { background: var(--text); color: var(--cream); }
+    .contact-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .contact-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+      padding: 2rem 0 1rem;
+    }
+    .contact-success.show { display: flex; }
+    .contact-success p {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 2;
+      letter-spacing: 0.02em;
+    }
+    .contact-success .success-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    @media (max-width: 600px) {
+      .contact-modal { padding: 3rem 1.5rem 2.5rem; }
+    }
+  </style>
+  <!-- Config (credentials) -->
+  <script src="config.js"></script>
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- reCAPTCHA (renders widget after page load) -->
+  <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
+</head>
+<body>
+
+  <!-- Prismatic ambient light -->
+  <div class="prismatic"></div>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1>AN ORACLE DECK</h1>
+      <div class="title-main">Daydream Oracle</div>
+      <p class="byline">BY PAIGE WOODS</p>
+    </div>
+  </section>
+
+  <!-- Nav (fixed - sits at top of screen) -->
+  <nav id="nav">
+    <div class="nav-links">
+      <a href="#pick-card" onclick="smoothNav(event,'pick-card')">Draw</a>
+      <a href="#deck" onclick="smoothNav(event,'deck')">The Deck</a>
+      <a href="#spread" onclick="smoothNav(event,'spread')">Spreads</a>
+    </div>
+  </nav>
+
+  <!-- Pick a Card -->
+  <section id="pick-card">
+    <div class="container">
+      <p class="section-heading">GUIDANCE</p>
+      <h2 class="section-title">Pick a Card</h2>
+      <p class="section-subtitle">Close your eyes. Take a breath. When you feel ready, let the Universe choose for you.</p>
+
+      <div id="pickArea" style="text-align:center;">
+        <div class="card-fan" id="pickFan" style="margin:0 auto 2rem;" onclick="pickRandomCard()"></div>
+        <button class="btn-pick" onclick="pickRandomCard()">REVEAL</button>
+      </div>
+
+      <div class="revealed-card" id="revealedCard">
+        <img id="revealImg" src="" alt="" onclick="openModalFromPick()" />
+        <span class="card-number" id="revealNumber"></span>
+        <h3 class="card-name" id="revealName"></h3>
+        <p class="card-meaning" id="revealMeaning"></p>
+        <button class="btn-again" onclick="resetPick()">DRAW AGAIN</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Deck -->
+  <section id="deck">
+    <div class="container">
+      <div class="section-divider"></div>
+      <p class="section-heading">ALL 60 CARDS</p>
+      <h2 class="section-title">The Deck</h2>
+      <p class="section-subtitle">Each card carries a message. Click to read its wisdom.</p>
+
+      <div class="deck-grid" id="deckGrid"></div>
+    </div>
+  </section>
+
+  <!-- Spreads -->
+  <section id="spread">
+    <div class="container">
+      <div class="section-divider"></div>
+      <p class="section-heading">SPREADS</p>
+      <h2 class="section-title">Past, Present &amp; Future</h2>
+      <p class="section-subtitle">Before you begin, take a deep breath - ask yourself "What is it I need clarity on right now?" A Past, Present, Future reading is about perspective, allowing your decisions and desires to inform your actions.</p>
+
+      <div class="spread-layout" id="spreadLayout">
+        <div class="spread-position">
+          <span class="spread-label">PAST</span>
+          <div class="spread-slot" id="spreadPast" onclick="revealSpreadCard('past')">
+            <span class="slot-prompt"><img src="images/cardoraclecover.jpg" alt="card back" class="slot-cover" /></span>
+            <img class="revealed-img" src="" alt="" />
+          </div>
+          <span class="spread-card-name" id="spreadPastName"></span>
+        </div>
+        <div class="spread-position">
+          <span class="spread-label">PRESENT</span>
+          <div class="spread-slot" id="spreadPresent" onclick="revealSpreadCard('present')">
+            <span class="slot-prompt"><img src="images/cardoraclecover.jpg" alt="card back" class="slot-cover" /></span>
+            <img class="revealed-img" src="" alt="" />
+          </div>
+          <span class="spread-card-name" id="spreadPresentName"></span>
+        </div>
+        <div class="spread-position">
+          <span class="spread-label">FUTURE</span>
+          <div class="spread-slot" id="spreadFuture" onclick="revealSpreadCard('future')">
+            <span class="slot-prompt"><img src="images/cardoraclecover.jpg" alt="card back" class="slot-cover" /></span>
+            <img class="revealed-img" src="" alt="" />
+          </div>
+          <span class="spread-card-name" id="spreadFutureName"></span>
+        </div>
+      </div>
+
+      <!-- Reading Summary -->
+      <div class="spread-reading" id="spreadReading">
+        <div class="reading-divider"></div>
+        <p class="spread-reading-label">YOUR READING</p>
+        <div class="spread-reading-text" id="spreadReadingText"></div>
+        <div class="reading-divider"></div>
+        <p class="reading-synthesis" id="spreadSynthesis"></p>
+      </div>
+
+      <button class="spread-reset" id="spreadReset" onclick="resetSpread()">NEW READING</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    DAYDREAM ORACLE - CREATED WITH LOVE BY PAIGE WOODS
+    <br>
+    <button class="btn-contact" onclick="openContactModal()">CONTACT</button>
+  </footer>
+
+  <!-- Contact Modal -->
+  <div class="contact-overlay" id="contactOverlay" onclick="if(event.target===this)closeContactModal()">
+    <div class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+      <button class="modal-close" onclick="closeContactModal()" aria-label="Close">&times;</button>
+
+      <!-- Form view -->
+      <div id="contactFormView">
+        <h2 id="contactTitle">Get In Touch</h2>
+        <p class="contact-subtitle">Send a message</p>
+
+        <form id="contactForm" novalidate onsubmit="submitContactForm(event)">
+          <div class="contact-field" id="field-name">
+            <label for="contactName">First Name</label>
+            <input type="text" id="contactName" name="from_name" autocomplete="given-name" placeholder="Your first name">
+            <span class="field-error">Please enter your first name</span>
+          </div>
+
+          <div class="contact-field" id="field-email">
+            <label for="contactEmail">Email</label>
+            <input type="email" id="contactEmail" name="reply_to" autocomplete="email" placeholder="your@email.com">
+            <span class="field-error" id="emailError">Please enter a valid email address</span>
+          </div>
+
+          <div class="contact-field" id="field-message">
+            <label for="contactMessage">Message</label>
+            <textarea id="contactMessage" name="message" placeholder="What's on your mind?"></textarea>
+            <span class="field-error">Please enter a message</span>
+          </div>
+
+          <div class="contact-recaptcha">
+            <div class="g-recaptcha" id="recaptchaWidget"></div>
+          </div>
+
+          <button type="submit" class="contact-submit" id="contactSubmit" disabled>SEND MESSAGE</button>
+        </form>
+      </div>
+
+      <!-- Success view -->
+      <div class="contact-success" id="contactSuccess">
+        <p class="success-title">Message Sent</p>
+        <p>Thank you for reaching out.<br>I'll be in touch soon.</p>
+        <button class="btn-contact" onclick="closeContactModal()">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <img id="modalImg" src="" alt="" />
+      <span class="modal-number" id="modalNumber"></span>
+      <h3 id="modalName"></h3>
+      <p class="modal-meaning" id="modalMeaning"></p>
+    </div>
+  </div>
+
+  <script src="cards.js"></script>
+  <script src="readings.js"></script>
+  <script>
+    // Smart scroll for nav anchor links
+    function smoothNav(e, id) {
+      e.preventDefault();
+      const target = document.getElementById(id);
+      if (!target) return;
+      const content = target.querySelector('.container') || target;
+      // Top-align all sections, offset for fixed nav height
+      const navH = document.getElementById('nav').offsetHeight;
+      const anchor = target.querySelector('.section-heading') || target.querySelector('.section-title') || content;
+      const top = anchor.getBoundingClientRect().top + window.scrollY - navH - 20;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+
+    // ---- BUILD CARD FANS ----
+    function buildFan(containerId) {
+      const fan = document.getElementById(containerId);
+      fan.innerHTML = '';
+      const angles = [-22, -11, 0, 11, 22];
+      const zIndexes = [1, 2, 3, 2, 1];
+      for (let i = 0; i < 5; i++) {
+        const el = document.createElement('div');
+        el.className = 'fan-card';
+        el.innerHTML = `<img src="images/cardoraclecover.jpg" alt="card back" />`;
+        el.style.transform = `translateX(-50%) rotate(${angles[i]}deg)`;
+        el.style.zIndex = zIndexes[i];
+        fan.appendChild(el);
+      }
+    }
+    buildFan('pickFan');
+
+    // ---- BUILD DECK GRID ----
+    const deckGrid = document.getElementById('deckGrid');
+    CARDS.forEach((card, i) => {
+      const tile = document.createElement('div');
+      tile.className = 'deck-card fade-in';
+      tile.onclick = () => openModal(card);
+      tile.innerHTML = `
+        <img src="${card.image}" alt="${card.name}" loading="lazy" />
+        <div class="deck-card-name">${card.name}</div>
+      `;
+      deckGrid.appendChild(tile);
+    });
+
+    // ---- PICK RANDOM CARD ----
+    let currentPickedCard = null;
+    function pickRandomCard() {
+      const card = CARDS[Math.floor(Math.random() * CARDS.length)];
+      currentPickedCard = card;
+      document.getElementById('pickArea').style.display = 'none';
+      const rev = document.getElementById('revealedCard');
+      rev.classList.add('show');
+      document.getElementById('revealImg').src = card.image;
+      document.getElementById('revealImg').alt = card.name;
+      document.getElementById('revealNumber').textContent = `CARD ${card.id} OF 60`;
+      document.getElementById('revealName').textContent = card.name;
+      document.getElementById('revealMeaning').textContent = card.meaning;
+    }
+
+    function openModalFromPick() {
+      if (currentPickedCard) openModal(currentPickedCard);
+    }
+
+    function resetPick() {
+      document.getElementById('revealedCard').classList.remove('show');
+      document.getElementById('pickArea').style.display = '';
+      currentPickedCard = null;
+      buildFan('pickFan');
+      document.getElementById('pick-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ---- MODAL ----
+    function openModal(card) {
+      document.getElementById('modalImg').src = card.image;
+      document.getElementById('modalImg').alt = card.name;
+      document.getElementById('modalNumber').textContent = `CARD ${card.id} OF 60`;
+      document.getElementById('modalName').textContent = card.name;
+      document.getElementById('modalMeaning').textContent = card.meaning;
+      document.getElementById('modalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // ---- SPREAD ----
+    const spreadState = { past: null, present: null, future: null };
+    const usedInSpread = new Set();
+
+    function revealSpreadCard(position) {
+      if (spreadState[position]) return;
+
+      // Pick a random card not yet used in this spread
+      let available = CARDS.filter(c => !usedInSpread.has(c.id));
+      if (available.length === 0) available = CARDS;
+      const card = available[Math.floor(Math.random() * available.length)];
+      spreadState[position] = card;
+      usedInSpread.add(card.id);
+
+      const slotId = 'spread' + position.charAt(0).toUpperCase() + position.slice(1);
+      const slot = document.getElementById(slotId);
+      const img = slot.querySelector('.revealed-img');
+      img.src = card.image;
+      img.alt = card.name;
+      slot.classList.add('revealed');
+
+      // Make revealed card clickable to open lightbox
+      slot.onclick = () => openModal(card);
+
+      const nameEl = document.getElementById(slotId + 'Name');
+      nameEl.textContent = card.name;
+      nameEl.classList.add('show');
+
+      // Check if all three are revealed - generate reading
+      if (spreadState.past && spreadState.present && spreadState.future) {
+        document.getElementById('spreadReset').classList.add('show');
+        generateReading(spreadState.past, spreadState.present, spreadState.future);
+      }
+    }
+
+    // ---- READING GENERATOR (loaded from readings.js) ----
+
+    function resetSpread() {
+      ['past', 'present', 'future'].forEach(pos => {
+        spreadState[pos] = null;
+        const slotId = 'spread' + pos.charAt(0).toUpperCase() + pos.slice(1);
+        const slot = document.getElementById(slotId);
+        slot.classList.remove('revealed');
+        slot.querySelector('.revealed-img').src = '';
+        // Restore original click handler for card reveal
+        slot.onclick = () => revealSpreadCard(pos);
+        document.getElementById(slotId + 'Name').textContent = '';
+        document.getElementById(slotId + 'Name').classList.remove('show');
+      });
+      usedInSpread.clear();
+      document.getElementById('spreadReset').classList.remove('show');
+      document.getElementById('spreadReading').classList.remove('show');
+      document.getElementById('spreadReadingText').innerHTML = '';
+      document.getElementById('spreadSynthesis').textContent = '';
+    }
+
+    // ---- INTERSECTION OBSERVER ----
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+    // Stagger the deck cards
+    setTimeout(() => {
+      document.querySelectorAll('.fade-in').forEach((el, i) => {
+        el.style.transitionDelay = `${Math.min(i * 30, 600)}ms`;
+        observer.observe(el);
+      });
+    }, 100);
+  </script>
+
+  <!-- ---- CONTACT MODAL ---- -->
+  <script>
+    // Init EmailJS once config is available
+    (function() {
+      const cfg = window.SITE_CONFIG || {};
+      if (cfg.EMAILJS_PUBLIC_KEY && cfg.EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+        emailjs.init({ publicKey: cfg.EMAILJS_PUBLIC_KEY });
+      }
+      // If no reCAPTCHA key, enable the submit button immediately
+      const hasRecaptcha = cfg.RECAPTCHA_SITE_KEY && cfg.RECAPTCHA_SITE_KEY !== 'YOUR_SITE_KEY';
+      if (!hasRecaptcha) {
+        const btn = document.getElementById('contactSubmit');
+        if (btn) btn.disabled = false;
+      }
+    })();
+
+    // reCAPTCHA: render widget when API is ready, enable submit on success
+    function onRecaptchaLoad() {
+      const cfg = window.SITE_CONFIG || {};
+      const siteKey = cfg.RECAPTCHA_SITE_KEY;
+      if (!siteKey || siteKey === 'YOUR_SITE_KEY') {
+        // No reCAPTCHA key configured - enable submit directly
+        document.getElementById('contactSubmit').disabled = false;
+        return;
+      }
+      grecaptcha.render('recaptchaWidget', {
+        sitekey: siteKey,
+        callback: function() {
+          document.getElementById('contactSubmit').disabled = false;
+        },
+        'expired-callback': function() {
+          document.getElementById('contactSubmit').disabled = true;
+        }
+      });
+    }
+
+    function openContactModal() {
+      document.getElementById('contactOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeContactModal() {
+      document.getElementById('contactOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function validateField(fieldWrapId, inputEl) {
+      const wrapper = document.getElementById(fieldWrapId);
+      const isEmpty = inputEl.value.trim() === '';
+      const isEmailField = inputEl.type === 'email';
+      const isInvalidEmail = isEmailField && !isEmpty && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEl.value.trim());
+
+      if (isEmpty || isInvalidEmail) {
+        wrapper.classList.add('has-error');
+        if (isInvalidEmail) {
+          document.getElementById('emailError').textContent = 'Please enter a valid email address';
+        }
+        return false;
+      }
+      wrapper.classList.remove('has-error');
+      return true;
+    }
+
+    async function submitContactForm(e) {
+      e.preventDefault();
+      const nameEl    = document.getElementById('contactName');
+      const emailEl   = document.getElementById('contactEmail');
+      const messageEl = document.getElementById('contactMessage');
+
+      const v1 = validateField('field-name',    nameEl);
+      const v2 = validateField('field-email',   emailEl);
+      const v3 = validateField('field-message', messageEl);
+      if (!v1 || !v2 || !v3) return;
+
+      const btn = document.getElementById('contactSubmit');
+      btn.disabled = true;
+      btn.textContent = 'SENDING…';
+
+      try {
+        const cfg = window.SITE_CONFIG || {};
+        await emailjs.send(cfg.EMAILJS_SERVICE_ID, cfg.EMAILJS_TEMPLATE_ID, {
+          from_name: nameEl.value.trim(),
+          reply_to:  emailEl.value.trim(),
+          message:   messageEl.value.trim(),
+          to_email:  'paigewoodsart@gmail.com',
+        });
+        document.getElementById('contactFormView').style.display = 'none';
+        document.getElementById('contactSuccess').classList.add('show');
+      } catch (err) {
+        console.error('EmailJS error:', err);
+        btn.textContent = 'SEND MESSAGE';
+        btn.disabled = false;
+        alert('Something went wrong - please try again or email me directly at paigewoodsart@gmail.com');
+      }
+    }
+
+    // Clear form state when modal reopens
+    document.getElementById('contactOverlay').addEventListener('transitionend', function() {
+      if (!this.classList.contains('open')) {
+        document.getElementById('contactForm').reset();
+        document.getElementById('contactFormView').style.display = '';
+        document.getElementById('contactSuccess').classList.remove('show');
+        document.querySelectorAll('.contact-field').forEach(f => f.classList.remove('has-error'));
+        const btn = document.getElementById('contactSubmit');
+        btn.textContent = 'SEND MESSAGE';
+        btn.disabled = true;
+        if (typeof grecaptcha !== 'undefined') {
+          try { grecaptcha.reset(); } catch(e) {}
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -907,10 +907,6 @@
   </style>
   <!-- Config (credentials) -->
   <script src="config.js"></script>
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <!-- reCAPTCHA (renders widget after page load) -->
-  <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
 </head>
 <body>
 
@@ -1037,13 +1033,13 @@
         <form id="contactForm" novalidate onsubmit="submitContactForm(event)">
           <div class="contact-field" id="field-name">
             <label for="contactName">First Name</label>
-            <input type="text" id="contactName" name="from_name" autocomplete="given-name" placeholder="Your first name">
+            <input type="text" id="contactName" name="name" autocomplete="given-name" placeholder="Your first name">
             <span class="field-error">Please enter your first name</span>
           </div>
 
           <div class="contact-field" id="field-email">
             <label for="contactEmail">Email</label>
-            <input type="email" id="contactEmail" name="reply_to" autocomplete="email" placeholder="your@email.com">
+            <input type="email" id="contactEmail" name="email" autocomplete="email" placeholder="your@email.com">
             <span class="field-error" id="emailError">Please enter a valid email address</span>
           </div>
 
@@ -1053,11 +1049,7 @@
             <span class="field-error">Please enter a message</span>
           </div>
 
-          <div class="contact-recaptcha">
-            <div class="g-recaptcha" id="recaptchaWidget"></div>
-          </div>
-
-          <button type="submit" class="contact-submit" id="contactSubmit" disabled>SEND MESSAGE</button>
+          <button type="submit" class="contact-submit" id="contactSubmit">SEND MESSAGE</button>
         </form>
       </div>
 
@@ -1246,40 +1238,6 @@
 
   <!-- ---- CONTACT MODAL ---- -->
   <script>
-    // Init EmailJS once config is available
-    (function() {
-      const cfg = window.SITE_CONFIG || {};
-      if (cfg.EMAILJS_PUBLIC_KEY && cfg.EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
-        emailjs.init({ publicKey: cfg.EMAILJS_PUBLIC_KEY });
-      }
-      // If no reCAPTCHA key, enable the submit button immediately
-      const hasRecaptcha = cfg.RECAPTCHA_SITE_KEY && cfg.RECAPTCHA_SITE_KEY !== 'YOUR_SITE_KEY';
-      if (!hasRecaptcha) {
-        const btn = document.getElementById('contactSubmit');
-        if (btn) btn.disabled = false;
-      }
-    })();
-
-    // reCAPTCHA: render widget when API is ready, enable submit on success
-    function onRecaptchaLoad() {
-      const cfg = window.SITE_CONFIG || {};
-      const siteKey = cfg.RECAPTCHA_SITE_KEY;
-      if (!siteKey || siteKey === 'YOUR_SITE_KEY') {
-        // No reCAPTCHA key configured - enable submit directly
-        document.getElementById('contactSubmit').disabled = false;
-        return;
-      }
-      grecaptcha.render('recaptchaWidget', {
-        sitekey: siteKey,
-        callback: function() {
-          document.getElementById('contactSubmit').disabled = false;
-        },
-        'expired-callback': function() {
-          document.getElementById('contactSubmit').disabled = true;
-        }
-      });
-    }
-
     function openContactModal() {
       document.getElementById('contactOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -1323,17 +1281,21 @@
       btn.textContent = 'SENDING…';
 
       try {
-        const cfg = window.SITE_CONFIG || {};
-        await emailjs.send(cfg.EMAILJS_SERVICE_ID, cfg.EMAILJS_TEMPLATE_ID, {
-          from_name: nameEl.value.trim(),
-          reply_to:  emailEl.value.trim(),
-          message:   messageEl.value.trim(),
-          to_email:  'paigewoodsart@gmail.com',
+        const res = await fetch('https://formspree.io/f/mjgalbyr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            name:    nameEl.value.trim(),
+            email:   emailEl.value.trim(),
+            message: messageEl.value.trim(),
+          }),
         });
+        if (!res.ok) throw new Error('Submission failed');
+        document.getElementById('contactForm').reset();
         document.getElementById('contactFormView').style.display = 'none';
         document.getElementById('contactSuccess').classList.add('show');
       } catch (err) {
-        console.error('EmailJS error:', err);
+        console.error('Form error:', err);
         btn.textContent = 'SEND MESSAGE';
         btn.disabled = false;
         alert('Something went wrong - please try again or email me directly at paigewoodsart@gmail.com');
@@ -1349,10 +1311,7 @@
         document.querySelectorAll('.contact-field').forEach(f => f.classList.remove('has-error'));
         const btn = document.getElementById('contactSubmit');
         btn.textContent = 'SEND MESSAGE';
-        btn.disabled = true;
-        if (typeof grecaptcha !== 'undefined') {
-          try { grecaptcha.reset(); } catch(e) {}
-        }
+        btn.disabled = false;
       }
     });
   </script>

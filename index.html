@@ -906,7 +906,6 @@
     }
   </style>
   <!-- Config (credentials) -->
-  <script src="config.js"></script>
 </head>
 <body>
 
@@ -1239,6 +1238,15 @@
   <!-- ---- CONTACT MODAL ---- -->
   <script>
     function openContactModal() {
+      // Reset form state every time modal opens
+      document.getElementById('contactForm').reset();
+      document.getElementById('contactFormView').style.display = '';
+      document.getElementById('contactSuccess').classList.remove('show');
+      document.querySelectorAll('.contact-field').forEach(f => f.classList.remove('has-error'));
+      const btn = document.getElementById('contactSubmit');
+      btn.textContent = 'SEND MESSAGE';
+      btn.disabled = false;
+
       document.getElementById('contactOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -1302,18 +1310,6 @@
       }
     }
 
-    // Clear form state when modal reopens
-    document.getElementById('contactOverlay').addEventListener('transitionend', function() {
-      if (!this.classList.contains('open')) {
-        document.getElementById('contactForm').reset();
-        document.getElementById('contactFormView').style.display = '';
-        document.getElementById('contactSuccess').classList.remove('show');
-        document.querySelectorAll('.contact-field').forEach(f => f.classList.remove('has-error'));
-        const btn = document.getElementById('contactSubmit');
-        btn.textContent = 'SEND MESSAGE';
-        btn.disabled = false;
-      }
-    });
   </script>
 </body>
 </html>

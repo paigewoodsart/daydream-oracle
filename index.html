@@ -904,6 +904,117 @@
     @media (max-width: 600px) {
       .contact-modal { padding: 3rem 1.5rem 2.5rem; }
     }
+
+    /* ---- TIP JAR ---- */
+    .tip-jar-btn {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      animation: tipFloat 2.4s ease-in-out infinite;
+      filter: drop-shadow(0 2px 4px rgba(44, 41, 38, 0.2));
+    }
+    .tip-jar-btn:hover {
+      filter: drop-shadow(0 4px 8px rgba(44, 41, 38, 0.3));
+    }
+    .tip-jar-btn svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--text-light);
+      transition: fill 0.3s ease;
+    }
+    .tip-jar-btn:hover svg {
+      fill: var(--text);
+    }
+    .tip-jar-label {
+      display: block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 5pt;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+    @keyframes tipFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .tip-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 41, 38, 0.55);
+      backdrop-filter: blur(8px);
+      z-index: 300;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .tip-overlay.open { display: flex; }
+    .tip-modal {
+      background: var(--cream);
+      border-radius: 2px;
+      max-width: 340px;
+      width: 100%;
+      padding: 2.5rem 2rem 2rem;
+      position: relative;
+      animation: fadeUp 0.45s ease;
+      text-align: center;
+    }
+    .tip-modal h2 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .tip-modal .tip-free-site {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 5pt;
+      font-style: italic;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      margin-top: -0.2rem;
+    }
+    .tip-modal p {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.95rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+    .tip-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .tip-links a {
+      display: block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 400;
+      padding: 0.7rem 1.8rem;
+      border: 1px solid rgba(44, 41, 38, 0.2);
+      background: transparent;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: all 0.4s ease;
+    }
+    .tip-links a:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
   </style>
   <!-- Config (credentials) -->
 </head>
@@ -1057,6 +1168,22 @@
         <p class="success-title">Message Sent</p>
         <p>Thank you for reaching out.<br>I'll be in touch soon.</p>
         <button class="btn-contact" onclick="closeContactModal()">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tip Jar -->
+  <button class="tip-jar-btn" id="tipJarBtn" onclick="openTipJar()" aria-label="Tip Jar"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 L58 34 L85 15 L66 42 L100 50 L66 58 L85 85 L58 66 L50 100 L42 66 L15 85 L34 58 L0 50 L34 42 L15 15 L42 34 Z"/></svg><span class="tip-jar-label">Leave a Tip</span></button>
+  <div class="tip-overlay" id="tipOverlay" onclick="if(event.target===this)closeTipJar()">
+    <div class="tip-modal">
+      <button class="modal-close" onclick="closeTipJar()" aria-label="Close">&times;</button>
+      <h2>Leave a Tip</h2>
+      <p class="tip-free-site">THIS IS A COMPLETELY FREE SITE AND A LABOR OF LOVE</p>
+      <p>If this wisdom brought you joy, feel free to send a little love my way!</p>
+      <div class="tip-links">
+        <a href="https://account.venmo.com/u/paige-woods-29" target="_blank" rel="noopener">Venmo</a>
+        <a href="https://cash.app/$paigewoodsart" target="_blank" rel="noopener">CashApp</a>
+        <a href="https://wise.com/pay/me/laceyw20" target="_blank" rel="noopener">Wise</a>
       </div>
     </div>
   </div>
@@ -1235,6 +1362,18 @@
     }, 100);
   </script>
 
+  <!-- ---- TIP JAR ---- -->
+  <script>
+    function openTipJar() {
+      document.getElementById('tipOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeTipJar() {
+      document.getElementById('tipOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  </script>
+
   <!-- ---- CONTACT MODAL ---- -->
   <script>
     function openContactModal() {
@@ -1311,5 +1450,6 @@
     }
 
   </script>
+
 </body>
 </html>

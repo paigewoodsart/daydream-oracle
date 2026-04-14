@@ -1,0 +1,23 @@
+{
+  "name": "daydream-oracle",
+  "version": "1.0.0",
+  "description": "Daydream Oracle by Paige Woods - A tarot card reading web application",
+  "main": "cards.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://x-access-token:ghs_RUqyg950Dcd03xnen7gi9OQ4X4ddRG2IRdeP@github.com/paigewoodsart/daydream-oracle.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paigewoodsart/daydream-oracle/issues"
+  },
+  "homepage": "https://github.com/paigewoodsart/daydream-oracle#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}

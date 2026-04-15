@@ -155,6 +155,22 @@
       align-items: center;
     }
     nav a:hover { opacity: 1; }
+    .nav-info-link {
+      position: absolute;
+      right: 1.5rem;
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(0.64rem, 1.5vw, 0.82rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--text);
+      opacity: 0.7;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      transition: opacity 0.3s ease;
+    }
+    .nav-info-link:hover { opacity: 1; }
     nav .nav-links {
       display: flex;
       gap: clamp(2rem, 5vw, 3.5rem);
@@ -740,10 +756,14 @@
     /* ---- RESPONSIVE: mobile ---- */
     @media (max-width: 768px) {
       nav {
-        padding: 0.75rem 1.5rem;
+        padding: 0.75rem 0;
+        justify-content: space-evenly;
       }
       nav .nav-links {
-        gap: 1.75rem;
+        display: contents;
+      }
+      .nav-info-link {
+        position: static;
       }
       .hero {
         justify-content: center;
@@ -1040,6 +1060,7 @@
       <a href="#deck" onclick="smoothNav(event,'deck')">The Deck</a>
       <a href="#spread" onclick="smoothNav(event,'spread')">Spreads</a>
     </div>
+    <a href="/info" class="nav-info-link">About</a>
   </nav>
 
   <!-- Pick a Card -->

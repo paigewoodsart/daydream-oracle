@@ -983,11 +983,14 @@
       .nav-info-link { position: static; }
       .deck-guide-section { padding: 3rem 1.5rem; }
       .numerology-section { padding: 3rem 1.5rem; }
-      .anatomy-diagram { display: block; height: 300px; }
+      .anatomy-diagram { display: block; height: 390px; }
       .anatomy-mobile-fallback { display: none; }
-      .anatomy-card-img { width: 76px; left: calc(50% - 38px); top: 18px; }
-      .anatomy-abs-label { width: 112px; padding: 0.5rem 0.6rem; }
+      .anatomy-card-img { width: 130px; left: calc(50% - 65px); top: 90px; }
+      .anatomy-abs-label { width: 115px; padding: 0.5rem 0.6rem; }
       .anatomy-abs-label span { font-size: 0.62rem; }
+      .anatomy-label-top-left { top: 0; left: auto; right: 0; }
+      .anatomy-label-right { top: 0; left: 0; right: auto; transform: none; }
+      .anatomy-label-bottom-left { bottom: 0; left: 0; }
       .anatomy-text-desktop { display: none; }
       .anatomy-text-mobile { display: inline; }
       .anatomy-svg-desktop { display: none; }
@@ -1183,16 +1186,16 @@
           <line x1="240" y1="375" x2="514" y2="318" stroke="rgba(44,41,38,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
           <circle cx="514" cy="318" r="2.5" fill="rgba(44,41,38,0.35)"/>
         </svg>
-        <svg class="anatomy-svg anatomy-svg-mobile" viewBox="0 0 327 300" xmlns="http://www.w3.org/2000/svg">
-          <!-- Color Theme: top-left label → card top area -->
-          <line x1="112" y1="5" x2="152" y2="28" stroke="rgba(44,41,38,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
-          <circle cx="152" cy="28" r="2.5" fill="rgba(44,41,38,0.35)"/>
-          <!-- Card Title: right label → card center -->
-          <line x1="215" y1="130" x2="168" y2="78" stroke="rgba(44,41,38,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
-          <circle cx="168" cy="78" r="2.5" fill="rgba(44,41,38,0.35)"/>
-          <!-- Card Number: bottom-left label → card bottom -->
-          <line x1="112" y1="227" x2="165" y2="132" stroke="rgba(44,41,38,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
-          <circle cx="165" cy="132" r="2.5" fill="rgba(44,41,38,0.35)"/>
+        <svg class="anatomy-svg anatomy-svg-mobile" viewBox="0 0 327 390" xmlns="http://www.w3.org/2000/svg">
+          <!-- Card Title: top-left label → card center (REST circle) -->
+          <line x1="115" y1="55" x2="157" y2="175" stroke="rgba(44,41,38,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
+          <circle cx="157" cy="175" r="2.5" fill="rgba(44,41,38,0.35)"/>
+          <!-- Color Theme: top-right label → card top background -->
+          <line x1="212" y1="55" x2="178" y2="100" stroke="rgba(44,41,38,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
+          <circle cx="178" cy="100" r="2.5" fill="rgba(44,41,38,0.35)"/>
+          <!-- Card Number: bottom-left label → card number badge -->
+          <line x1="115" y1="330" x2="161" y2="280" stroke="rgba(44,41,38,0.18)" stroke-width="1" stroke-dasharray="5,4"/>
+          <circle cx="161" cy="280" r="2.5" fill="rgba(44,41,38,0.35)"/>
         </svg>
       </div>
 

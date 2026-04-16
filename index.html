@@ -170,11 +170,6 @@
       transition: color 0.3s ease;
     }
     .nav-info-link:hover { color: var(--text); }
-    nav .nav-links {
-      display: flex;
-      gap: clamp(2rem, 5vw, 3.5rem);
-      align-items: center;
-    }
 
     /* ---- HERO ---- */
     .hero {
@@ -758,9 +753,6 @@
         padding: 0.75rem 0;
         justify-content: space-evenly;
       }
-      nav .nav-links {
-        display: contents;
-      }
       .nav-info-link {
         position: static;
       }
@@ -1054,11 +1046,9 @@
 
   <!-- Nav (fixed - sits at top of screen) -->
   <nav id="nav">
-    <div class="nav-links">
-      <a href="#pick-card" onclick="smoothNav(event,'pick-card')">Draw</a>
-      <a href="#deck" onclick="smoothNav(event,'deck')">The Deck</a>
-      <a href="#spread" onclick="smoothNav(event,'spread')">Spreads</a>
-    </div>
+    <a href="#pick-card" onclick="smoothNav(event,'pick-card')">Draw</a>
+    <a href="#deck" onclick="smoothNav(event,'deck')">The Deck</a>
+    <a href="#spread" onclick="smoothNav(event,'spread')">Spreads</a>
     <a href="/info" class="nav-info-link">About</a>
   </nav>
 
